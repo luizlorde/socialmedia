@@ -1,0 +1,43 @@
+name: Pauta Semanal
+
+on:
+  schedule:
+    - cron: '0 11 * * 1'   # Toda segunda 08h (BRT = UTC-3, então 11h UTC)
+  workflow_dispatch:        # botão pra rodar manualmente quando quiser
+
+jobs:
+  gerar-pauta:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: write       # necessário pra commitar a memória atualizada
+    env:
+      TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+      TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+      CLICKUP_API_TOKEN: ${{ secrets.CLICKUP_API_TOKEN }}
+      CLICKUP_LIST_ID: ${{ secrets.CLICKUP_LIST_ID }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          prompt: |
+            Leia system-prompt.md, contexto.md, memoria/aprendizados.md e memoria/metricas.md.
+            Em seguida, execute a FUNÇÃO 1 (gerar pauta) e a FUNÇÃO 2 (registrar no ClickUp):
+            - Gere a pauta da semana (3 a 4 peças) seguindo os pilares e priorizando o que já funcionou.
+            - Crie cada peça como tarefa no ClickUp usando scripts/clickup.sh.
+            - Envie um resumo da pauta no Telegram usando scripts/telegram.sh.
+            - Se notar algum padrão novo, atualize memoria/aprendizados.md.
+          claude_args: |
+            --model claude-sonnet-4-6
+            --max-turns 30
+            --allowedTools "Read,Write,Edit,Bash(bash:*)"
+
+      - name: Salvar memória atualizada
+        run: |
+          git config user.name "agente-social"
+          git config user.email "actions@users.noreplace.github.com"
+          git add memoria/ contexto.md
+          git commit -m "Atualiza memória [skip ci]" || echo "Sem mudanças na memória"
+          git push

@@ -1,0 +1,36 @@
+name: Cobrança Diária
+
+on:
+  schedule:
+    - cron: '0 21 * * *'   # Todo dia 18h (BRT = UTC-3, então 21h UTC)
+  workflow_dispatch:
+
+jobs:
+  cobrar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write
+    env:
+      TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+      TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+      CLICKUP_API_TOKEN: ${{ secrets.CLICKUP_API_TOKEN }}
+      CLICKUP_LIST_ID: ${{ secrets.CLICKUP_LIST_ID }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          prompt: |
+            Leia system-prompt.md e contexto.md.
+            Execute a FUNÇÃO 3 (cobrar execução):
+            - Liste as tarefas abertas com scripts/clickup.sh listar.
+            - Identifique o que está parado ou atrasado.
+            - Se houver algo pendente, mande UMA mensagem direta e específica no Telegram
+              (scripts/telegram.sh), citando a peça, há quanto tempo está parada e o próximo passo.
+            - Se estiver tudo em dia, mande uma mensagem curta confirmando e elogiando o ritmo.
+          claude_args: |
+            --model claude-sonnet-4-6
+            --max-turns 20
+            --allowedTools "Read,Bash(bash:*)"
