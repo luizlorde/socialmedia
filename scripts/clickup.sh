@@ -18,7 +18,7 @@ case "$CMD" in
     curl -s -X POST -H "Authorization: ${CLICKUP_API_TOKEN}" \
       -H "Content-Type: application/json" \
       "${BASE}/list/${CLICKUP_LIST_ID}/task" \
-      -d "$(jq -n --arg n "$TITULO" --arg d "$DESC" '{name:$n, description:$d}')"
+      -d "$(jq -n --arg n "$TITULO" --arg d "$DESC" '{name:$n, description:$d, assignees:[48668697], notify_all:true}')"
     ;;
   *)
     echo "Comando inválido. Use: listar | criar"

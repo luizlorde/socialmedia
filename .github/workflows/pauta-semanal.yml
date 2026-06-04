@@ -11,6 +11,7 @@ jobs:
     timeout-minutes: 20
     permissions:
       contents: write       # necessário pra commitar a memória atualizada
+      id-token: write        # necessário pro claude-code-action autenticar
     env:
       TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
       TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
