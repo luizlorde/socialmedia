@@ -1,8 +1,10 @@
 name: Pauta Semanal
 
 on:
-  schedule:
-    - cron: '0 11 * * 1'   # Toda segunda 08h (BRT = UTC-3, então 11h UTC)
+  # PAUSADO até resolver o bug do OAuth no claude-code-action (#1316/#1281).
+  # Retomar reativando o schedule quando aplicarmos o workaround avançado.
+  # schedule:
+  #   - cron: '0 11 * * 1'   # Toda segunda 08h (BRT = UTC-3, então 11h UTC)
   workflow_dispatch:        # botão pra rodar manualmente quando quiser
 
 jobs:

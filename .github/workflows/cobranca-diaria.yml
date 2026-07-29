@@ -1,8 +1,10 @@
 name: Cobrança Diária
 
 on:
-  schedule:
-    - cron: '0 21 * * *'   # Todo dia 18h (BRT = UTC-3, então 21h UTC)
+  # PAUSADO até resolver o bug do OAuth no claude-code-action (#1316/#1281).
+  # Retomar reativando o schedule quando aplicarmos o workaround avançado.
+  # schedule:
+  #   - cron: '0 21 * * *'   # Todo dia 18h (BRT = UTC-3, então 21h UTC)
   workflow_dispatch:
 
 jobs:
@@ -26,7 +28,6 @@ jobs:
       - uses: anthropics/claude-code-action@v1
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
-          show_full_output: true   # TEMPORÁRIO: revela o erro real p/ debug — remover depois
           prompt: |
             Leia system-prompt.md e contexto.md.
             Execute a FUNÇÃO 3 (cobrar execução):
