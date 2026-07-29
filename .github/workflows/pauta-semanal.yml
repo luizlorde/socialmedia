@@ -34,7 +34,7 @@ jobs:
             - Envie um resumo da pauta no Telegram usando scripts/telegram.sh.
             - Se notar algum padrão novo, atualize memoria/aprendizados.md.
           claude_args: |
-            --model claude-sonnet-4-6
+            --model opus
             --max-turns 30
             --allowedTools "Read,Write,Edit,Bash(bash:*)"
 

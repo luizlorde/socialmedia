@@ -35,6 +35,6 @@ jobs:
               (scripts/telegram.sh), citando a peça, há quanto tempo está parada e o próximo passo.
             - Se estiver tudo em dia, mande uma mensagem curta confirmando e elogiando o ritmo.
           claude_args: |
-            --model claude-sonnet-4-6
+            --model opus
             --max-turns 20
             --allowedTools "Read,Bash(bash:*)"
